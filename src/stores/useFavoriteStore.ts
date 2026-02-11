@@ -1,0 +1,35 @@
+import { create } from "zustand"
+import type { FavoriteLocation, Location } from "../types"
+import { persist } from "zustand/middleware"
+
+interface FavoriteStore {
+  locations: FavoriteLocation[]
+  add: (location: Location) => void
+  remove: (id: string) => void
+}
+
+export const useFavoriteStore = create<FavoriteStore>()(
+  persist(
+    set => ({
+      locations: [],
+      add: location =>
+        set(state => ({
+          locations: [
+            ...state.locations,
+            {
+              id: crypto.randomUUID(),
+              lat: location.lat,
+              lng: location.lng,
+              address: location.address,
+              createdAt: Date.now(),
+            },
+          ],
+        })),
+      remove: id =>
+        set(state => ({
+          locations: state.locations.filter(location => location.id !== id),
+        })),
+    }),
+    { name: "favorite-locations-storage" }
+  )
+)
