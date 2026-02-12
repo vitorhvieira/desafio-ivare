@@ -1,11 +1,13 @@
 import { useState, type ChangeEvent } from "react"
 import { useSearch } from "../hooks/useSearch"
 import { useMapStore } from "../stores/useMapStore"
+import { useFavoriteStore } from "../stores/useFavoriteStore"
 
 export function SearchBar() {
   const [inputValue, setInputValue] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const { updatePosition } = useMapStore()
+  const { add } = useFavoriteStore()
 
   const { data, isLoading, error } = useSearch(searchTerm)
 
@@ -39,6 +41,18 @@ export function SearchBar() {
               }
             >
               {result.address}
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                add({
+                  address: result.address,
+                  lat: result.lat,
+                  lng: result.lng,
+                })
+              }
+            >
+              Favoritar
             </button>
           </li>
         ))}

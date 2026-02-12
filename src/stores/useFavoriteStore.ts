@@ -13,18 +13,29 @@ export const useFavoriteStore = create<FavoriteStore>()(
     set => ({
       locations: [],
       add: location =>
-        set(state => ({
-          locations: [
-            ...state.locations,
-            {
-              id: crypto.randomUUID(),
-              lat: location.lat,
-              lng: location.lng,
-              address: location.address,
-              createdAt: Date.now(),
-            },
-          ],
-        })),
+        set(state => {
+          const alreadyExists = state.locations.some(
+            item => item.lat === location.lat && item.lng === location.lng
+          )
+
+          if (alreadyExists) {
+            return {
+              locations: state.locations,
+            }
+          }
+          return {
+            locations: [
+              ...state.locations,
+              {
+                id: crypto.randomUUID(),
+                lat: location.lat,
+                lng: location.lng,
+                address: location.address,
+                createdAt: Date.now(),
+              },
+            ],
+          }
+        }),
       remove: id =>
         set(state => ({
           locations: state.locations.filter(location => location.id !== id),
