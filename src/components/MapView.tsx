@@ -11,6 +11,7 @@ import {
 import { useMapStore } from "../stores/useMapStore"
 import { useReverseGeocode } from "../hooks/useReverseGeocode"
 import { useFavoriteStore } from "../stores/useFavoriteStore"
+import { FaHeart } from "react-icons/fa"
 
 function FlyToLocation() {
   const { location } = useMapStore()
@@ -48,7 +49,7 @@ export function MapView() {
   const { add } = useFavoriteStore()
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-full">
       <MapContainer
         center={[location.lat, location.lng]}
         zoom={location.zoom}
@@ -59,22 +60,29 @@ export function MapView() {
           <Marker position={[selectedPoint.lat, selectedPoint.lng]}>
             <Popup>
               {isLoading ? (
-                <p>Buscando endereço...</p>
+                <p className="text-sm text-gray-500">Buscando endereço...</p>
               ) : (
                 <div>
-                  {selectedPoint.lat.toFixed(4)}
-                  {selectedPoint.lng.toFixed(4)}
+                  <p className="text-xs text-gray-500">
+                    {selectedPoint.lat.toFixed(4)}/
+                    {selectedPoint.lng.toFixed(4)}
+                  </p>
+
                   {data && (
                     <div>
-                      <p>{data.address}</p>
+                      <p className="text-sm font-medium text-gray-800 mt-1">
+                        {data.address}
+                      </p>
                       <button
                         type="button"
-                        onClick={() => {
+                        className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mt-2"
+                        onClick={e => {
+                          e.stopPropagation()
                           add(data)
                           clearSelection()
                         }}
                       >
-                        Salvar como favorito
+                        <FaHeart /> <span>Favoritar</span>
                       </button>
                     </div>
                   )}
