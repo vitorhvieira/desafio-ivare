@@ -28,3 +28,29 @@ export async function searchAddress(query: string): Promise<Location[]> {
     lng: Number(data.lon),
   }))
 }
+
+export async function reverseGeocode(
+  lat: number,
+  lng: number
+): Promise<Location> {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+    {
+      headers: {
+        "Accept-Language": "pt-BR",
+      },
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error("Erro no endereço!")
+  }
+
+  const responseData: NominatimRaw = await response.json()
+
+  return {
+    address: responseData.display_name,
+    lat: Number(responseData.lat),
+    lng: Number(responseData.lon),
+  }
+}

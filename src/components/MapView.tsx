@@ -1,7 +1,16 @@
 import "leaflet/dist/leaflet.css"
 import { useEffect, useRef } from "react"
-import { MapContainer, TileLayer, useMap } from "react-leaflet"
+import {
+  MapContainer,
+  TileLayer,
+  useMap,
+  useMapEvents,
+  Marker,
+  Popup,
+} from "react-leaflet"
 import { useMapStore } from "../stores/useMapStore"
+import { useReverseGeocode } from "../hooks/useReverseGeocode"
+import { useFavoriteStore } from "../stores/useFavoriteStore"
 
 function FlyToLocation() {
   const { location } = useMapStore()
@@ -20,8 +29,23 @@ function FlyToLocation() {
   return null
 }
 
+function ClickMap() {
+  const { selectPoint } = useMapStore()
+  useMapEvents({
+    click: event => {
+      selectPoint({ lat: event.latlng.lat, lng: event.latlng.lng })
+    },
+  })
+  return null
+}
+
 export function MapView() {
-  const { location } = useMapStore()
+  const { location, selectedPoint, clearSelection } = useMapStore()
+  const { data, isLoading } = useReverseGeocode(
+    selectedPoint?.lat ?? null,
+    selectedPoint?.lng ?? null
+  )
+  const { add } = useFavoriteStore()
 
   return (
     <div className="w-full h-screen">
@@ -31,10 +55,39 @@ export function MapView() {
         scrollWheelZoom={false}
         style={{ height: "100%", width: "100%" }}
       >
+        {selectedPoint && (
+          <Marker position={[selectedPoint.lat, selectedPoint.lng]}>
+            <Popup>
+              {isLoading ? (
+                <p>Buscando endereço...</p>
+              ) : (
+                <div>
+                  {selectedPoint.lat.toFixed(4)}
+                  {selectedPoint.lng.toFixed(4)}
+                  {data && (
+                    <div>
+                      <p>{data.address}</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          add(data)
+                          clearSelection()
+                        }}
+                      >
+                        Salvar como favorito
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </Popup>
+          </Marker>
+        )}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <ClickMap />
         <FlyToLocation />
       </MapContainer>
     </div>
