@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { reverseGeocode } from "../services/nominatim"
+import { reverseGeocode } from "../services/mapboxGeocoding"
 
 export function useReverseGeocode(lat: number | null, lng: number | null) {
   return useQuery({

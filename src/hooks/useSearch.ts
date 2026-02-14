@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { searchAddress } from "../services/nominatim"
+import { searchAddress } from "../services/mapboxGeocoding"
 
 export function useSearch(query: string) {
   return useQuery({

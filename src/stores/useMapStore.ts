@@ -10,7 +10,7 @@ interface MapStore {
 }
 
 export const useMapStore = create<MapStore>(set => ({
-  location: { lat: -18.921872714917058, lng: -48.27838790893658, zoom: 8 },
+  location: { lat: -18.921872714917058, lng: -48.27838790893658, zoom: 12 },
   selectedPoint: null,
   updatePosition: position =>
     set({

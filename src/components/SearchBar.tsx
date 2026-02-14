@@ -3,6 +3,7 @@ import { useSearch } from "../hooks/useSearch"
 import { useMapStore } from "../stores/useMapStore"
 import { useFavoriteStore } from "../stores/useFavoriteStore"
 import { FaHeart, FaSearch, FaRegHeart } from "react-icons/fa"
+import { Skeleton } from "./Skeleton"
 
 export function SearchBar() {
   const [inputValue, setInputValue] = useState("")
@@ -58,9 +59,7 @@ export function SearchBar() {
         </button>
       </div>
 
-      {isLoading && (
-        <p className="text-sm text-gray-500 mt-2">Carregando....</p>
-      )}
+      {isLoading && <Skeleton lines={["w-full", "w-5/6", "w-full", "w-4/5"]} />}
       {error && <p className="text-sm text-red-500 mt-2">Erro na busca</p>}
 
       <ul className="mt-2 space-y-1">
