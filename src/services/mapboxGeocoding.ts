@@ -20,7 +20,7 @@ interface MapboxProperties {
 
 export async function searchAddress(query: string): Promise<Location[]> {
   const response = await fetch(
-    `https://api.mapbox.com/search/geocode/v6/forward?q=${query}&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}&language=pt`
+    `https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(query)}&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}&language=pt`
   )
 
   if (!response.ok) {
@@ -50,6 +50,10 @@ export async function reverseGeocode(
   }
 
   const responseData: MapboxResponse = await response.json()
+
+  if (responseData.features.length === 0) {
+    throw new Error("Nenhum endereço encontrado para esta localização!")
+  }
 
   return {
     address: responseData.features[0].properties.full_address,

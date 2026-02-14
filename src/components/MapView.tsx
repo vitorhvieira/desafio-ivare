@@ -1,10 +1,10 @@
 import "mapbox-gl/dist/mapbox-gl.css"
-import { Map as MapGL, Marker, Popup, type MapRef } from "react-map-gl/mapbox"
-import { useMapStore } from "../stores/useMapStore"
+import { useEffect, useRef } from "react"
+import { FaHeart } from "react-icons/fa"
+import { Map as MapGL, type MapRef, Marker, Popup } from "react-map-gl/mapbox"
 import { useReverseGeocode } from "../hooks/useReverseGeocode"
 import { useFavoriteStore } from "../stores/useFavoriteStore"
-import { FaHeart } from "react-icons/fa"
-import { useRef, useEffect } from "react"
+import { useMapStore } from "../stores/useMapStore"
 import { Skeleton } from "./Skeleton"
 
 export function MapView() {
@@ -72,6 +72,7 @@ export function MapView() {
                         </p>
                         <button
                           type="button"
+                          aria-label="Favoritar"
                           onClick={() => {
                             add(data)
                             clearSelection()

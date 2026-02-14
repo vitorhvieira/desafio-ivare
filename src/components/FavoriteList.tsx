@@ -1,7 +1,7 @@
+import { FaHeart } from "react-icons/fa"
 import { useFavoriteStore } from "../stores/useFavoriteStore"
 import { useMapStore } from "../stores/useMapStore"
 import { FavoriteItem } from "./FavoriteItem"
-import { FaHeart } from "react-icons/fa"
 
 export function FavoriteList() {
   const { updatePosition, selectPoint } = useMapStore()

@@ -1,6 +1,6 @@
 import { create } from "zustand"
-import type { FavoriteLocation, Location } from "../types"
 import { persist } from "zustand/middleware"
+import type { FavoriteLocation, Location } from "../types"
 
 interface FavoriteStore {
   locations: FavoriteLocation[]

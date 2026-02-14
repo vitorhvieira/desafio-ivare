@@ -1,8 +1,8 @@
-import { useState, type ChangeEvent } from "react"
+import { type ChangeEvent, useState } from "react"
+import { FaHeart, FaRegHeart, FaSearch } from "react-icons/fa"
 import { useSearch } from "../hooks/useSearch"
-import { useMapStore } from "../stores/useMapStore"
 import { useFavoriteStore } from "../stores/useFavoriteStore"
-import { FaHeart, FaSearch, FaRegHeart } from "react-icons/fa"
+import { useMapStore } from "../stores/useMapStore"
 import { Skeleton } from "./Skeleton"
 
 export function SearchBar() {
@@ -52,6 +52,7 @@ export function SearchBar() {
         />
         <button
           type="button"
+          aria-label="Buscar Endereço"
           className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm"
           onClick={handleSearch}
         >
@@ -75,6 +76,7 @@ export function SearchBar() {
             >
               <button
                 type="button"
+                aria-label="Endereço encontrado"
                 className="text-sm text-gray-700 hover:text-blue-600 text-left truncate flex-1 cursor-pointer"
                 onClick={() => {
                   updatePosition({ lat: result.lat, lng: result.lng, zoom: 15 })
@@ -85,6 +87,7 @@ export function SearchBar() {
               </button>
               <button
                 type="button"
+                aria-label="Favoritar"
                 className="cursor-pointer"
                 onClick={() =>
                   handleFavorite(result.lat, result.lng, result.address)
