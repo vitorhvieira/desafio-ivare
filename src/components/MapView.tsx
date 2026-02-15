@@ -1,10 +1,12 @@
 import "mapbox-gl/dist/mapbox-gl.css"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaHeart } from "react-icons/fa"
 import { Map as MapGL, type MapRef, Marker, Popup } from "react-map-gl/mapbox"
 import { useReverseGeocode } from "../hooks/useReverseGeocode"
 import { useFavoriteStore } from "../stores/useFavoriteStore"
 import { useMapStore } from "../stores/useMapStore"
+import { isSameLocation } from "../utils/isSameLocation"
+import { NameDialog } from "./NameDialog"
 import { Skeleton } from "./Skeleton"
 
 export function MapView() {
@@ -13,9 +15,10 @@ export function MapView() {
     selectedPoint?.lat ?? null,
     selectedPoint?.lng ?? null
   )
-  const { add } = useFavoriteStore()
+  const { add, locations, remove } = useFavoriteStore()
   const mapRef = useRef<MapRef>(null)
   const isFirstRender = useRef(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -28,6 +31,10 @@ export function MapView() {
       duration: 1500,
     })
   }, [location.lat, location.lng, location.zoom])
+
+  const existingFavorite = data
+    ? locations.find(loc => isSameLocation(loc, data))
+    : undefined
 
   return (
     <div className="w-full h-full">
@@ -70,18 +77,27 @@ export function MapView() {
                         <p className="text-sm font-medium text-gray-800 mt-1">
                           {data.address}
                         </p>
-                        <button
-                          type="button"
-                          aria-label="Favoritar"
-                          onClick={() => {
-                            add(data)
-                            clearSelection()
-                          }}
-                          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mt-2 cursor-pointer"
-                        >
-                          <FaHeart />
-                          <span>Favoritar</span>
-                        </button>
+                        {existingFavorite ? (
+                          <button
+                            type="button"
+                            aria-label="Desfavoritar"
+                            onClick={() => remove(existingFavorite.id)}
+                            className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 mt-2 cursor-pointer"
+                          >
+                            <FaHeart />
+                            <span>Desfavoritar</span>
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            aria-label="Favoritar"
+                            onClick={() => setDialogOpen(true)}
+                            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mt-2 cursor-pointer"
+                          >
+                            <FaHeart />
+                            <span>Favoritar</span>
+                          </button>
+                        )}
                       </div>
                     )}
                   </>
@@ -91,6 +107,16 @@ export function MapView() {
           </>
         )}
       </MapGL>
+      <NameDialog
+        onConfirm={name => {
+          if (!data) return
+          add({ ...data, name })
+          clearSelection()
+          setDialogOpen(false)
+        }}
+        isOpen={dialogOpen}
+        onCancel={() => setDialogOpen(false)}
+      />
     </div>
   )
 }

@@ -8,7 +8,7 @@ export function Skeleton({ lines }: SkeletonProps) {
       {lines.map((line, index) => (
         <div
           key={`${index}-${line}`}
-          className={`h-3 bg-gray-200 rounded ${line}`}
+          className={`h-3 bg-gray-200 rounded ${line} mt-3`}
         />
       ))}
     </div>

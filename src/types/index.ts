@@ -10,6 +10,7 @@ export interface Location extends LatLng {
 export interface FavoriteLocation extends Location {
   id: string
   createdAt: number
+  name: string
 }
 
 export interface MapViewState extends LatLng {
