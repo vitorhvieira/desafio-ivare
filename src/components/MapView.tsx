@@ -10,7 +10,8 @@ import { NameDialog } from "./NameDialog"
 import { Skeleton } from "./Skeleton"
 
 export function MapView() {
-  const { location, selectPoint, selectedPoint, clearSelection } = useMapStore()
+  const { location, selectPoint, selectedPoint, clearSelection, flyToCounter } =
+    useMapStore()
   const { data, isLoading } = useReverseGeocode(
     selectedPoint?.lat ?? null,
     selectedPoint?.lng ?? null
@@ -20,6 +21,7 @@ export function MapView() {
   const isFirstRender = useRef(true)
   const [dialogOpen, setDialogOpen] = useState(false)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: flyToCounter é um trigger intencional para forçar o flyTo quando as coordenadas são iguais.
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false
@@ -30,7 +32,7 @@ export function MapView() {
       zoom: location.zoom,
       duration: 1500,
     })
-  }, [location.lat, location.lng, location.zoom])
+  }, [location.lat, location.lng, location.zoom, flyToCounter])
 
   const existingFavorite = data
     ? locations.find(loc => isSameLocation(loc, data))
